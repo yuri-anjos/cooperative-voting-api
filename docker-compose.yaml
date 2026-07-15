@@ -1,0 +1,20 @@
+services:
+    postgres:
+        image: postgres:15
+        restart: unless-stopped
+        networks:
+            - cooperative_voting_network
+        environment:
+            POSTGRES_USER: admin
+            POSTGRES_PASSWORD: admin
+            POSTGRES_DB: cooperative_voting_db
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+networks:
+    cooperative_voting_network:
+
+volumes:
+    postgres_data:
