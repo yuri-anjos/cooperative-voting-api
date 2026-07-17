@@ -1,7 +1,65 @@
 package br.com.yurifranca.cooperative_voting_api.service;
 
+import br.com.yurifranca.cooperative_voting_api.domain.dto.request.RegistrarVotoRequest;
+import br.com.yurifranca.cooperative_voting_api.domain.dto.response.ResultadoVotacaoResponse;
+import br.com.yurifranca.cooperative_voting_api.domain.dto.response.VotoResponse;
+import br.com.yurifranca.cooperative_voting_api.domain.entity.Sessao;
+import br.com.yurifranca.cooperative_voting_api.domain.entity.Voto;
+import br.com.yurifranca.cooperative_voting_api.domain.enums.OpcaoVotoEnum;
+import br.com.yurifranca.cooperative_voting_api.domain.enums.ResultadoVotacaoEnum;
+import br.com.yurifranca.cooperative_voting_api.domain.mapper.VotoMapper;
+import br.com.yurifranca.cooperative_voting_api.exception.NegocioException;
+import br.com.yurifranca.cooperative_voting_api.repository.VotoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
+@RequiredArgsConstructor
 @Service
 public class VotoService {
+
+    private final VotoRepository repository;
+    private final SessaoService sessaoService;
+
+    public VotoResponse registrarVoto(Long pautaId, RegistrarVotoRequest request) {
+        Sessao sessao = sessaoService.findByPautaId(pautaId);
+
+        if (!sessao.estaAberta()) {
+            throw new NegocioException("A sessão de votação está encerrada.");
+        }
+        if (repository.existsBySessaoIdAndAssociadoId(sessao.getId(), request.associadoId())) {
+            throw new NegocioException("O associado já votou nesta pauta.");
+        }
+
+        Voto voto = new Voto();
+        voto.setSessao(sessao);
+        voto.setAssociadoId(request.associadoId());
+        voto.setAssociadoCpf(request.associadoCpf());
+        voto.setVoto(request.voto());
+
+        voto = repository.save(voto);
+
+        return VotoMapper.toResponse(voto);
+    }
+
+    public ResultadoVotacaoResponse consultarResultado(Long pautaId) {
+        Sessao sessao = sessaoService.findByPautaId(pautaId);
+        if (LocalDateTime.now().isBefore(sessao.getEncerramento())) {
+            throw new NegocioException("A votação ainda está em andamento.");
+        }
+
+        Long votosSim = repository.countBySessaoIdAndVoto(sessao.getId(), OpcaoVotoEnum.SIM);
+        Long votosNao = repository.countBySessaoIdAndVoto(sessao.getId(), OpcaoVotoEnum.NAO);
+        ResultadoVotacaoEnum resultado = votosSim > votosNao ? ResultadoVotacaoEnum.APROVADO : ResultadoVotacaoEnum.REJEITADO;
+
+        return new ResultadoVotacaoResponse(
+                pautaId,
+                sessao.getId(),
+                votosSim,
+                votosNao,
+                votosSim + votosNao,
+                resultado
+        );
+    }
 }

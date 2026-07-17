@@ -27,5 +27,8 @@ public class Sessao {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pauta_id", nullable = false, unique = true)
     private Pauta pauta;
-
+    
+    public boolean estaAberta() {
+        return !LocalDateTime.now().isAfter(encerramento);
+    }
 }

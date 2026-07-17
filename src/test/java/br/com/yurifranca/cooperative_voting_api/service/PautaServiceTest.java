@@ -44,7 +44,7 @@ class PautaServiceTest {
         PautaResponse response = service.criarPauta(request);
 
         assertNotNull(response);
-        assertEquals(1L, response.id());
+        assertEquals(1L, response.pautaId());
 
         verify(repository).save(any(Pauta.class));
     }

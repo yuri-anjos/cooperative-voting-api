@@ -1,6 +1,6 @@
 CREATE TABLE sessao (
     id BIGSERIAL PRIMARY KEY,
-    pauta_id BIGINT NOT NULL,
+    pauta_id BIGINT NOT NULL UNIQUE,
     abertura TIMESTAMP NOT NULL,
     encerramento TIMESTAMP NOT NULL,
 

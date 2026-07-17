@@ -5,6 +5,7 @@ import br.com.yurifranca.cooperative_voting_api.domain.dto.response.SessaoRespon
 import br.com.yurifranca.cooperative_voting_api.domain.entity.Pauta;
 import br.com.yurifranca.cooperative_voting_api.domain.entity.Sessao;
 import br.com.yurifranca.cooperative_voting_api.exception.NegocioException;
+import br.com.yurifranca.cooperative_voting_api.exception.RecursoNaoEncontradoException;
 import br.com.yurifranca.cooperative_voting_api.repository.SessaoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,7 +34,44 @@ class SessaoServiceTest {
     private SessaoService service;
 
     @Test
-    void deveIniciarSessaoComDuracaoInformada() {
+    void findByPautaId_deveRetornarSessaoQuandoEncontrarPorPautaId() {
+        Long pautaId = 1L;
+        Sessao sessao = new Sessao();
+        sessao.setId(10L);
+
+        when(repository.findByPautaId(pautaId))
+                .thenReturn(Optional.of(sessao));
+
+        Sessao resultado = service.findByPautaId(pautaId);
+
+        assertNotNull(resultado);
+        assertEquals(10L, resultado.getId());
+
+        verify(repository).findByPautaId(pautaId);
+    }
+
+    @Test
+    void findByPautaId_deveLancarExcecaoQuandoNaoEncontrarSessaoPorPautaId() {
+        Long pautaId = 1L;
+
+        when(repository.findByPautaId(pautaId))
+                .thenReturn(Optional.empty());
+
+        RecursoNaoEncontradoException exception = assertThrows(
+                RecursoNaoEncontradoException.class,
+                () -> service.findByPautaId(pautaId)
+        );
+
+        assertEquals(
+                "Pauta ou Sessão não foram encontrados",
+                exception.getMessage()
+        );
+
+        verify(repository).findByPautaId(pautaId);
+    }
+
+    @Test
+    void iniciarSessao_deveIniciarSessaoComDuracaoInformada() {
 
         AbrirSessaoRequest request = new AbrirSessaoRequest(10);
 
@@ -55,7 +94,7 @@ class SessaoServiceTest {
     }
 
     @Test
-    void deveIniciarSessaoComDuracaoPadraoQuandoNaoInformada() {
+    void iniciarSessao_deveIniciarSessaoComDuracaoPadraoQuandoNaoInformada() {
 
         AbrirSessaoRequest request = new AbrirSessaoRequest(null);
 
@@ -83,7 +122,7 @@ class SessaoServiceTest {
     }
 
     @Test
-    void deveLancarExcecaoQuandoPautaJaPossuirSessao() {
+    void iniciarSessao_deveLancarExcecaoQuandoPautaJaPossuirSessao() {
 
         AbrirSessaoRequest request = new AbrirSessaoRequest(5);
 

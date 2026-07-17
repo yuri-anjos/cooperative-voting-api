@@ -6,6 +6,7 @@ import br.com.yurifranca.cooperative_voting_api.domain.entity.Pauta;
 import br.com.yurifranca.cooperative_voting_api.domain.entity.Sessao;
 import br.com.yurifranca.cooperative_voting_api.domain.mapper.SessaoMapper;
 import br.com.yurifranca.cooperative_voting_api.exception.NegocioException;
+import br.com.yurifranca.cooperative_voting_api.exception.RecursoNaoEncontradoException;
 import br.com.yurifranca.cooperative_voting_api.repository.SessaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,10 @@ public class SessaoService {
 
     private final SessaoRepository repository;
     private final PautaService pautaService;
+
+    public Sessao findByPautaId(Long pautaId) {
+        return repository.findByPautaId(pautaId).orElseThrow(() -> new RecursoNaoEncontradoException("Pauta ou Sessão não foram encontrados"));
+    }
 
     public SessaoResponse iniciarSessao(Long pautaId, AbrirSessaoRequest request) {
         int duracaoDaSessaoEmMinutos = request.duracaoEmMinutos() != null ? request.duracaoEmMinutos() : 1;
