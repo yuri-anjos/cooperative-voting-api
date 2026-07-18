@@ -10,10 +10,12 @@ import br.com.yurifranca.cooperative_voting_api.domain.enums.ResultadoVotacaoEnu
 import br.com.yurifranca.cooperative_voting_api.domain.mapper.VotoMapper;
 import br.com.yurifranca.cooperative_voting_api.exception.NegocioException;
 import br.com.yurifranca.cooperative_voting_api.repository.VotoRepository;
+import br.com.yurifranca.cooperative_voting_api.repository.projection.ContagemVotosProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -49,8 +51,17 @@ public class VotoService {
             throw new NegocioException("A votação ainda está em andamento.");
         }
 
-        Long votosSim = repository.countBySessaoIdAndVoto(sessao.getId(), OpcaoVotoEnum.SIM);
-        Long votosNao = repository.countBySessaoIdAndVoto(sessao.getId(), OpcaoVotoEnum.NAO);
+        List<ContagemVotosProjection> contagem = repository.contarVotosPorSessao(sessao.getId());
+        long votosSim = 0;
+        long votosNao = 0;
+        for (ContagemVotosProjection item : contagem) {
+            if (OpcaoVotoEnum.SIM.equals(item.getVoto())) {
+                votosSim = item.getQuantidade();
+            }
+            if (OpcaoVotoEnum.NAO.equals(item.getVoto())) {
+                votosNao = item.getQuantidade();
+            }
+        }
         ResultadoVotacaoEnum resultado = votosSim > votosNao ? ResultadoVotacaoEnum.APROVADO : ResultadoVotacaoEnum.REJEITADO;
 
         return new ResultadoVotacaoResponse(

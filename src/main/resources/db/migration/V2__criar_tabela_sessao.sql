@@ -4,6 +4,5 @@ CREATE TABLE sessao (
     abertura TIMESTAMP NOT NULL,
     encerramento TIMESTAMP NOT NULL,
 
-    CONSTRAINT fk_sessao_pauta FOREIGN KEY (pauta_id) REFERENCES pauta(id),
-    CONSTRAINT uk_sessao_pauta UNIQUE (pauta_id)
+    CONSTRAINT fk_sessao_pauta FOREIGN KEY (pauta_id) REFERENCES pauta(id)
 );

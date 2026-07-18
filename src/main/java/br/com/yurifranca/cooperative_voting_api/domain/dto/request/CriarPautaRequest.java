@@ -9,7 +9,7 @@ public record CriarPautaRequest(
         String titulo,
 
         @NotBlank(message = "A descrição é obrigatória")
-        @Size(max = 5000, message = "A descrição deve ter no máximo 5000 caracteres")
+        @Size(max = 10000, message = "A descrição deve ter no máximo 10000 caracteres")
         String descricao
 ) {
 }
