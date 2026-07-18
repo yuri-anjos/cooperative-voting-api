@@ -2,6 +2,7 @@ services:
     postgres:
         image: postgres:15
         restart: unless-stopped
+        container_name: cooperative-voting-postgres
         networks:
             - cooperative_voting_network
         environment:

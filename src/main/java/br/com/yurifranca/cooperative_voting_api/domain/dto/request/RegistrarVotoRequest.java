@@ -18,7 +18,7 @@ public record RegistrarVotoRequest(
 
         @Schema(
                 description = "CPF do associado responsável pelo voto",
-                example = "123.456.789-09"
+                example = "12345678909"
         )
         @NotBlank(message = "O CPF do associado é obrigatório")
         @CPF(message = "CPF inválido")
@@ -32,4 +32,7 @@ public record RegistrarVotoRequest(
         )
         OpcaoVotoEnum voto
 ) {
+        public String cpfSemMascara() {
+                return associadoCpf.replaceAll("\\D", "");
+        }
 }

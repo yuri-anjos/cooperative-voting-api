@@ -4,7 +4,6 @@ server:
 spring:
   application:
     name: cooperative-voting-api
-
   datasource:
     url: jdbc:postgresql://localhost:5432/cooperative_voting_db
     username: admin
@@ -13,9 +12,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-
-    show-sql: true
-
+#    show-sql: true
 #    properties:
 #      hibernate:
 #        format_sql: true

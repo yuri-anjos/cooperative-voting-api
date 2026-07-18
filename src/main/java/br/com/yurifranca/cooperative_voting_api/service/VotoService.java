@@ -41,7 +41,7 @@ public class VotoService {
         Voto voto = new Voto();
         voto.setSessao(sessao);
         voto.setAssociadoId(request.associadoId());
-        voto.setAssociadoCpf(request.associadoCpf());
+        voto.setAssociadoCpf(request.cpfSemMascara());
         voto.setVoto(request.voto());
 
         voto = repository.save(voto);
