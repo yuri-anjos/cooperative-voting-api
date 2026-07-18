@@ -8,10 +8,18 @@ import jakarta.validation.constraints.Positive;
 import org.hibernate.validator.constraints.br.CPF;
 
 public record RegistrarVotoRequest(
+        @Schema(
+                description = "Identificador do associado que está registrando o voto",
+                example = "123"
+        )
         @NotNull(message = "ID do associado é obrigatório")
         @Positive(message = "O ID do associado deve ser maior que zero.")
         Long associadoId,
 
+        @Schema(
+                description = "CPF do associado responsável pelo voto",
+                example = "123.456.789-09"
+        )
         @NotBlank(message = "O CPF do associado é obrigatório")
         @CPF(message = "CPF inválido")
         String associadoCpf,
