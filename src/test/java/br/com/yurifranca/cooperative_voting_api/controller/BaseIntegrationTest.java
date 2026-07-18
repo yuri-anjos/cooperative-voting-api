@@ -14,7 +14,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-public abstract class IntegrationTest {
+public abstract class BaseIntegrationTest {
 
     @Autowired
     protected MockMvc mockMvc;

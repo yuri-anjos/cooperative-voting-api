@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ImportTestcontainers
-class PautaControllerIT extends IntegrationTest {
+class PautaControllerTest extends BaseIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
