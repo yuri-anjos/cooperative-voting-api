@@ -12,11 +12,13 @@ import br.com.yurifranca.cooperative_voting_api.exception.NegocioException;
 import br.com.yurifranca.cooperative_voting_api.repository.VotoRepository;
 import br.com.yurifranca.cooperative_voting_api.repository.projection.ContagemVotosProjection;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class VotoService {
@@ -25,6 +27,8 @@ public class VotoService {
     private final SessaoService sessaoService;
 
     public VotoResponse registrarVoto(Long pautaId, RegistrarVotoRequest request) {
+        log.info("Registrando voto para pauta {} pelo associado {}", pautaId, request.associadoId());
+
         Sessao sessao = sessaoService.findByPautaId(pautaId);
 
         if (!sessao.estaAberta()) {
@@ -42,10 +46,13 @@ public class VotoService {
 
         voto = repository.save(voto);
 
+        log.info("Voto registrado com sucesso. Id: {}, Pauta: {}, Sessão: {}, Associado: {}", voto.getId(), pautaId, sessao.getId(), request.associadoId());
         return VotoMapper.toResponse(voto);
     }
 
     public ResultadoVotacaoResponse consultarResultado(Long pautaId) {
+        log.info("Consultando resultado da votação da pauta {}", pautaId);
+
         Sessao sessao = sessaoService.findByPautaId(pautaId);
         if (LocalDateTime.now().isBefore(sessao.getEncerramento())) {
             throw new NegocioException("A votação ainda está em andamento.");
@@ -64,6 +71,7 @@ public class VotoService {
         }
         ResultadoVotacaoEnum resultado = votosSim > votosNao ? ResultadoVotacaoEnum.APROVADO : ResultadoVotacaoEnum.REJEITADO;
 
+        log.info("Resultado calculado. Pauta: {}, SIM: {}, NÃO: {}, Resultado: {}", pautaId, votosSim, votosNao, resultado);
         return new ResultadoVotacaoResponse(
                 pautaId,
                 sessao.getId(),
