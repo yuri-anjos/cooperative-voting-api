@@ -10,6 +10,7 @@ import br.com.yurifranca.cooperative_voting_api.exception.RecursoNaoEncontradoEx
 import br.com.yurifranca.cooperative_voting_api.repository.SessaoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class SessaoService {
     private final SessaoRepository repository;
     private final PautaService pautaService;
 
+    @Cacheable(value = "sessoes", key = "#pautaId")
     public Sessao findByPautaId(Long pautaId) {
         log.debug("Buscando sessão da pauta {}", pautaId);
 

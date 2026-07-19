@@ -4,6 +4,12 @@ server:
 spring:
   application:
     name: cooperative-voting-api
+  cache:
+    type: redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
   datasource:
     url: jdbc:postgresql://localhost:5432/cooperative_voting_db
     username: admin

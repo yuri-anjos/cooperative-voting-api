@@ -4,6 +4,7 @@ import br.com.yurifranca.cooperative_voting_api.domain.enums.OpcaoVotoEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "voto")
-public class Voto {
+public class Voto implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

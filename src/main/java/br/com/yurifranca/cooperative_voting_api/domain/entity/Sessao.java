@@ -3,6 +3,7 @@ package br.com.yurifranca.cooperative_voting_api.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "sessao")
-public class Sessao {
+public class Sessao implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

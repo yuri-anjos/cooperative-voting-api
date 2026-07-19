@@ -3,6 +3,7 @@ package br.com.yurifranca.cooperative_voting_api.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "pauta")
-public class Pauta {
+public class Pauta implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +30,6 @@ public class Pauta {
 
     @PrePersist
     protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
-        this.dataCriacao = now;
+        this.dataCriacao = LocalDateTime.now();
     }
 }
