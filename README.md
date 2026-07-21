@@ -1,5 +1,5 @@
 # cooperative-voting-api
-Desafio técnico para vaga Java PLENO da SOFTDESIGN
+Desafio técnico para vaga Java PLENO
 
 
 
@@ -37,19 +37,13 @@ A aplicação estará disponível em: http://localhost:8080
 
 
 
-## DECISÃO NA CONSULTA DO RESULTADO DA VOTAÇÃO
+## REDIS CACHE
 
-Durante o desenvolvimento, considerei duas abordagens para a consulta do resultado enquanto a sessão de votação ainda está em andamento:
+Foi utilizado Redis Cache para reduzir o número de consultas ao banco de dados em operações frequentes.
 
-- Retornar a quantidade parcial de votos (SIM e NÃO), sem informar o resultado final da votação.
-- Bloquear a consulta do resultado até o encerramento da sessão, retornando um erro de regra de negócio.
+A sessão de votação é armazenada em cache e reutilizada durante o registro dos votos, evitando consultas repetidas para buscar a sessão. 
 
-Optei pela segunda abordagem. Entendi que ocultar a contagem em tempo real dos votos evita que o andamento da votação influencie a decisão dos associados que ainda não votaram.
-
-
-
-## POR QUE TODAS AS ROTAS ESTÃO EM `/pautas`
-Os endpoints foram centralizados em Pauta, já que todas as funcionalidades do sistema partem de uma pauta cadastrada. Para o escopo deste desafio, essa organização deixa a API mais simples e intuitiva, evitando uma divisão desnecessária em vários controllers.
+Como o endpoint de registro de votos tende a ser o mais utilizado em cenários com grande volume de acessos, essa estratégia reduz a carga sobre o banco de dados e melhora o tempo de resposta da aplicação.
 
 
 
