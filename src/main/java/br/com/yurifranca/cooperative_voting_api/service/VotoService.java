@@ -9,6 +9,8 @@ import br.com.yurifranca.cooperative_voting_api.domain.enums.OpcaoVotoEnum;
 import br.com.yurifranca.cooperative_voting_api.domain.enums.ResultadoVotacaoEnum;
 import br.com.yurifranca.cooperative_voting_api.domain.mapper.VotoMapper;
 import br.com.yurifranca.cooperative_voting_api.exception.NegocioException;
+import br.com.yurifranca.cooperative_voting_api.integration.cpf.CpfStatusEnum;
+import br.com.yurifranca.cooperative_voting_api.integration.cpf.CpfValidationClient;
 import br.com.yurifranca.cooperative_voting_api.repository.VotoRepository;
 import br.com.yurifranca.cooperative_voting_api.repository.projection.ContagemVotosProjection;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class VotoService {
 
     private final VotoRepository repository;
     private final SessaoService sessaoService;
+    private final CpfValidationClient cpfValidationClient;
 
     public VotoResponse registrarVoto(Long pautaId, RegistrarVotoRequest request) {
         log.info("Registrando voto para pauta {} pelo associado {}", pautaId, request.associadoId());
@@ -36,6 +39,11 @@ public class VotoService {
         }
         if (repository.existsBySessaoIdAndAssociadoId(sessao.getId(), request.associadoId())) {
             throw new NegocioException("O associado já votou nesta pauta.");
+        }
+
+        var cpfValidationResponse = cpfValidationClient.validate(request.cpfSemMascara());
+        if(CpfStatusEnum.UNABLE_TO_VOTE.equals(cpfValidationResponse.status())) {
+            throw new NegocioException("O associado não pode realizar o voto.");
         }
 
         Voto voto = new Voto();

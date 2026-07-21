@@ -104,6 +104,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
+    @ExceptionHandler(IntegracaoException.class)
+    public ResponseEntity<ErrorResponse> handleIntegration(
+            IntegracaoException ex,
+            HttpServletRequest request
+    ) {
+        log.error("IntegracaoException: {}", ex.getMessage());
+
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                "Integration Error",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.badRequest().body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(
             Exception ex,
