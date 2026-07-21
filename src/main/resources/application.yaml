@@ -34,3 +34,7 @@ spring:
 logging:
   level:
     root: INFO
+
+cpf:
+  api:
+    url: ${CPF_API_URL:https://user-info.herokuapp.com/users}
