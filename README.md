@@ -12,20 +12,16 @@ Desafio técnico para vaga Java PLENO
 
 
 
-## BANCO DE DADOS
+## DOCKER
 
 O projeto possui um `docker-compose.yml` configurado para subir as dependências necessárias da aplicação:
 
 - PostgreSQL 16 (persistência dos dados)
+- Redis (cache)
 
-Para iniciar o banco: `docker compose up -d`
+Para iniciar as dependências: `docker compose up -d`
 
-Configuração utilizada:
-URL: `jdbc:postgresql://localhost:5432/cooperative_voting_db`  
-Usuário: `admin`  
-Senha: `admin`
-
-Para parar o banco: `docker compose down`
+Para parar as dependências: `docker compose down`
 
 
 
@@ -94,3 +90,15 @@ Para executar:
 Após iniciar a aplicação, acesse a documentação da API:
 
 [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+
+
+# ⚠️ Observação sobre a Bônus 1 integração externa
+
+O serviço disponibilizado pelo desafio (`https://user-info.herokuapp.com/users/{cpf}`) encontra-se indisponível no momento da entrega.
+
+A implementação foi iniciada e encontra-se disponível na branch `feat/integracao-sistema-cpf`, porém não foi incorporada à branch principal por não ser possível validar seu funcionamento com o serviço externo fora do ar.
+
+```
+GET https://user-info.herokuapp.com/users/{cpf}
+```
